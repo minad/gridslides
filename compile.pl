@@ -26,7 +26,14 @@ sub compile_slide {
     return $pdf;
 }
 
-my $file = $ARGV[0];
+my $once = 0;
+my $file;
+if ($ARGV[0] eq "--once") {
+    $file = $ARGV[1];
+    $once = 1;
+} else {
+    $file = $ARGV[0];
+}
 
 my $result = $file;
 $result =~ s/\.tex\Z//g;
@@ -56,6 +63,8 @@ do {
     `pdfjoin -q -o $result @slides`;
     rename $result, "../$result";
 
-    `inotifywait -e modify ../$file`;
-    (my $unused, $body) = load_file "../$file";
-} while (1);
+    unless ($once) {
+        `inotifywait -e modify ../$file`;
+        (my $unused, $body) = load_file "../$file";
+    }
+} until ($once);
