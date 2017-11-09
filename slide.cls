@@ -1,0 +1,2 @@
+\LoadClass{article}
+\RequirePackage{slide}

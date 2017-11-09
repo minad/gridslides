@@ -1,0 +1,227 @@
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{amsmath,amsthm,amssymb}
+\RequirePackage{mathtools}
+\RequirePackage[ngerman]{babel}
+\RequirePackage{braket}
+\RequirePackage{siunitx}
+\RequirePackage{xspace}
+\RequirePackage{dsfont}
+\RequirePackage{microtype}
+\RequirePackage{ragged2e}
+\RequirePackage{tikz}
+\RequirePackage[margin=0mm,paperwidth=128mm,paperheight=96mm]{geometry}
+\RequirePackage{xstring}
+\RequirePackage{enumerate}
+\RequirePackage{environ}
+\RequirePackage[pdfusetitle,bookmarksopen]{hyperref}
+\usetikzlibrary{calc}
+
+% support arrows in overlay
+\tikzstyle{every picture}+=[remember picture]
+
+\pagestyle{empty}
+\graphicspath{{figures/}}
+
+\newif\ifslide@grid
+%\slide@gridtrue
+\slide@gridfalse
+
+\newif\ifslide@boxes
+%\slide@boxestrue
+\slide@boxesfalse
+
+\ifslide@boxes%
+\tikzset{slide@box/.style={draw=blue}}
+\else
+\tikzset{slide@box/.style={}}
+\fi
+
+\def\slide@xoff{0}
+\def\slide@yoff{0}
+
+\long\def\slide@block(#1,#2,#3)#4{%
+  \let\oldxoff\slide@xoff%
+  \let\oldyoff\slide@yoff%
+  \pgfmathsetmacro\xoff{\slide@xoff+#1}%
+  \pgfmathsetmacro\yoff{\slide@yoff+#2}%
+  \global\let\slide@xoff\xoff%
+  \global\let\slide@yoff\yoff%
+  \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
+    \node[slide@box,rectangle,anchor=north west,inner sep=0pt,text width=#3*4mm] at (4mm*\xoff,4mm*\yoff)%
+    {%
+      \begingroup%
+      #4%
+      \endgroup%
+    };%
+  \end{tikzpicture}%
+  \global\let\slide@xoff\oldxoff%
+  \global\let\slide@yoff\oldyoff%
+}
+
+\def\slide@fig(#1,#2,#3)#4{\slide@block(#1,#2,#3){\includegraphics[width=\textwidth]{#4}}}
+
+\long\def\slide@eq(#1,#2)#3{%
+  \slide@block(#1,#2,32){%
+    $\begin{aligned}#3\end{aligned}$%
+  }%
+}
+
+\long\def\slide@txt(#1,#2)#3{\slide@block(#1,#2,32){\mbox{#3}}}
+
+\newcounter{slide@totalsteps}
+\newcounter{slide@step}
+
+\newcommand{\slide@setsteps}[1]{%
+  \ifnum#1>\value{slide@totalsteps}%
+    \setcounter{slide@totalsteps}{#1}%
+  \fi%
+}
+
+\long\def\slide@from<#1->#2#3{%
+  \slide@setsteps{#1}%
+  \ifnum\value{slide@step}<#1%
+    #3%
+  \else%
+    #2%
+  \fi%
+ }
+
+\long\def\slide@only<#1-#2>#3#4{%
+  \slide@setsteps{#1}%
+  \slide@setsteps{#2}%
+  \ifnum\value{slide@step}<#1%
+    #4%
+  \else%
+    \ifnum\value{slide@step}>#2%
+      #4%
+    \else%
+      #3%
+    \fi%
+  \fi%
+}
+
+\long\def\alt<#1>#2#3{%
+  \IfSubStr{#1}{-}{%
+    \IfBeginWith{#1}{-}{%
+      \slide@only<1#1>{#2}{#3}%
+    }{%
+      \IfEndWith{#1}{-}{%
+        \slide@from<#1>{#2}{#3}%
+      }{%
+        \slide@only<#1>{#2}{#3}%
+      }%
+    }%
+  }{%
+    \slide@only<#1-#1>{#2}{#3}%
+  }%
+}
+
+\long\def\only<#1>#2{\alt<#1>{#2}{}}
+
+\long\def\slide@blockhelper#1<#2>(#3)#4{\only<#2>{#1(#3){#4}}}
+\def\slide@defblock#1{%
+  \long\expandafter\def\csname#1\endcsname{%
+    \@ifnextchar<{\slide@blockhelper{\csname slide@#1\endcsname}}{\csname slide@#1\endcsname}%
+  }%
+}
+
+\slide@defblock{block}
+\slide@defblock{fig}
+\slide@defblock{eq}
+\slide@defblock{txt}
+
+\long\def\slide@cmdhelper#1#2<#3>#4{\alt<#3>{#1{#4}}{#2{#4}}}
+\def\slide@cmd#1#2{%
+  \expandafter\let\csname slide@#1\expandafter\endcsname\csname#1\endcsname%
+  \long\expandafter\def\csname#1\endcsname{%
+    \@ifnextchar<{\slide@cmdhelper{\csname slide@#1\endcsname}{#2}}{\csname slide@#1\endcsname}%
+  }%
+}
+
+\newcommand{\rgb}[1]{\definecolor{slide@rgb}{HTML}{#1}\color{slide@rgb}}
+
+\slide@cmd{textbf}{\relax}
+\slide@cmd{textit}{\relax}
+\slide@cmd{emph}{\relax}
+\slide@cmd{underline}{\relax}
+\def\slide@ignore#1{}
+\slide@cmd{color}{\slide@ignore}
+\slide@cmd{rgb}{\slide@ignore}
+
+\newcounter{slide}
+\stepcounter{slide}
+
+\newcommand{\slide@page}[1]{%
+  \setcounter{slide@totalsteps}{1}%
+  \setcounter{slide@step}{0}%
+  \setlength{\parindent}{0pt}%
+  \setlength{\parskip}{0pt}%
+  \loop\ifnum\value{slide@step}<\value{slide@totalsteps}%
+    \stepcounter{slide@step}%
+    \clearpage%
+    \begingroup%
+    #1%
+    \endgroup%
+  \repeat%
+  \stepcounter{slide}%
+}
+
+\newcommand{\bg}[1]{%
+  \fig(0,0,32){#1}%
+  \ifslide@grid%
+  \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
+    \begin{scope}[x=4mm,y=4mm]%
+      \draw[gray,step=1,line width=0.1pt] (0,0) grid (32,24);%
+      \draw[red,step=8,line width=1pt] (0,0) grid (32,24);%
+    \end{scope}%
+  \end{tikzpicture}%
+  \fi%
+}
+
+\def\slide@style{}
+\def\theheadline{}
+
+\newcommand{\slide@slide}[2]{%
+  \slide@page{%
+    \global\def\theheadline{#1}%
+    \slide@style%
+    #2%
+    \ifnum\value{slide@step}=1%
+      \pdfbookmark[0]{\theheadline}{slide\theslide}%
+    \fi
+    \ifnum\value{slide@totalsteps}>1%
+      \pdfbookmark[1]{Step \theslide@step}{slide\theslide.step\theslide@step}%
+    \fi
+  }%
+}
+
+\NewEnviron{slide}[1]{\slide@slide{#1}{\BODY}}
+\NewEnviron{style}{\global\let\slide@style\BODY}
+\NewEnviron{rawslide}{\slide@page{\BODY}}
+
+\newcommand{\institute}[1]{\newcommand\@institute{#1}}
+\newcommand{\theauthor}{\@author}
+\newcommand{\thedate}{\@date}
+\newcommand{\thetitle}{\@title}
+\newcommand{\theinstitute}{\@institute}
+
+% undefine some commands from article
+\let\tableofcontents\slide@undefined
+\let\addcontentsline\slide@undefined
+\let\paragraph\slide@undefined
+\let\subparagraph\slide@undefined
+\let\chapter\slide@undefined
+\let\section\slide@undefined
+\let\subsection\slide@undefined
+\let\subsubsection\slide@undefined
+\let\maketitle\slide@undefined
+\let\figure\slide@undefined
+\let\table\slide@undefined
+\let\pagestyle\slide@undefined
+\let\footnote\slide@undefined
+\let\bf\slide@undefined
+\let\it\slide@undefined
+\let\cal\slide@undefined
+\let\tt\slide@undefined
+\let\listoffigures\slide@undefined
+\let\listoftables\slide@undefined
