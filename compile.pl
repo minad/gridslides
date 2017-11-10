@@ -1,4 +1,12 @@
 #!/usr/bin/perl
+# Package:     slide
+# Description: This LaTeX package allows to create free form slides with boxes.
+# File:        compile.pl
+# Author:      Daniel Mendler <mail@daniel-mendler.de>
+# Version:     0.1
+# Date:        2017/11/11
+# License:     GPL2 or LPPL1.3 at your option
+
 use strict;
 use Digest::MD5 qw(md5_hex);
 use File::Slurp qw(read_file write_file);
