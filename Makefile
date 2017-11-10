@@ -5,6 +5,7 @@
 # Version:     0.1
 # Date:        2017/11/11
 # License:     GPL2 or LPPL1.3 at your option
+# Homepage:    https://github.com/minad/slide
 
 example.pdf: example.tex
 	./compile.pl --once example.tex
