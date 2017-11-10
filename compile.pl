@@ -6,6 +6,7 @@
 # Version:     0.1
 # Date:        2017/11/11
 # License:     GPL2 or LPPL1.3 at your option
+# Homepage:    https://github.com/minad/slide
 
 use strict;
 use Digest::MD5 qw(md5_hex);
