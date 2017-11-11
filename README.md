@@ -1,7 +1,7 @@
-# slide: LaTeX package to create free form slides
+# gridslides: LaTeX package to create free form slides with blocks placed on a grid
 
-This package allows to create free form slides with boxes placed on a grid.
-The boxes can be filled with text, TeX equations, figures etc.
+This package allows to create free form slides with blocks placed on a grid.
+The blocks can be filled with text, equations, figures etc.
 This allows more flexible slides similar compared to LaTeX beamer.
 Sequential unconvering of elements is supported.
 A compiler script is provided which compiles each slide separately, avoiding long compile times this way.
@@ -11,6 +11,9 @@ A compiler script is provided which compiles each slide separately, avoiding lon
 See the file `example.tex` and `example.pdf`. Each slide is compiled separately using `compile.pl example.tex`.
 
 ## Supported commands
+
+This package provides only a handful of commands, which
+allow to create slides and with blocks at fixed positions.
 
 ### Slides/Pages
 
@@ -24,7 +27,12 @@ See the file `example.tex` and `example.pdf`. Each slide is compiled separately 
 \end{rawslide}
 
 \begin{style}
-  Define style which underlies all slides
+  Define style which underlies all slides.
+  Best used together with \bg{filename}!
+\end{style}
+
+\begin{style}
+  \bg{figure-filename}
 \end{style}
 ```
 
@@ -33,9 +41,10 @@ See the file `example.tex` and `example.pdf`. Each slide is compiled separately 
 The slide is divided in a 32x24 grid.
 
 ```latex
+\bg{figure-filename}
 \txt(x,y){Text content}
 \block(x,y,w){Arbitrary content}
-\fig(x,y,w){filename}
+\fig(x,y,w){figure-filename}
 \eq(x,y){a^2 + b^2 = c^2}
 ```
 
@@ -61,6 +70,13 @@ Each slide can be split in multiple steps by defining blocks with `<n-m>` annota
 \theheadline defined by slide title
 \theslide defined by slide number
 ```
+
+## Alternatives
+
+* beamer
+* ffslides
+* prosper
+* pure tikz or pstricks
 
 ## License
 

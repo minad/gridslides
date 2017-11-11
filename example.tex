@@ -1,12 +1,12 @@
-% Package:     slide
-% Description: This LaTeX package allows to create free form slides with boxes.
+% Package:     gridslides
+% Description: LaTeX package to create free form slides with blocks placed on a grid
 % File:        example.tex
 % Author:      Daniel Mendler <mail@daniel-mendler.de>
 % Version:     0.1
 % Date:        2017/11/11
 % License:     GPL2 or LPPL1.3 at your option
-% Homepage:    https://github.com/minad/slide
-\documentclass{slide}
+% Homepage:    https://github.com/minad/gridslides
+\documentclass{gridslides}
 
 \usepackage{cmbright}
 
@@ -83,8 +83,8 @@
   \txt(1.5,11){Lattice}
   \eq(6.5,10){\OpH = \sum_{i=1}^{n-1} \left [ t c_i\hc c_{i+1}\nohc + \Delta c\nohc_i c\nohc_{i+1} + \hcterm \right] - \mu \sum_{i=1}^n c_i\hc c_i\nohc}
 
-  \fig(2,5,12){chain_trivial}
-  \fig(18,5,12){chain_nontrivial}
+  \fig(2,4,12){chain_trivial}
+  \fig(18,5.5,12){chain_nontrivial}
 
   \block<2->(26,10.5,4){%
     \tikz \node[draw=red,inner sep=1mm] {
