@@ -11,9 +11,12 @@ example.pdf: example.tex
 	./compile.pl --once example.tex
 
 clean:
-	rm -rf auto output example.pdf gridslides.zip gridslides
+	rm -rf auto output example.pdf gridslides.zip gridslides gridslides.pdf
 
-dist: clean example.pdf *.cls *.sty README.md
+gridslides.pdf: README.md
+	pandoc README.md -o gridslides.pdf
+
+dist: gridslides.pdf example.pdf *.cls *.sty README.md
 	for i in $$(git ls-files | grep -v .gitignore); do mkdir -p gridslides/$$(dirname $$i); cp $$i gridslides/$$i; done
 	zip -r gridslides.zip gridslides
 	rm -rf gridslides
