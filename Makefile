@@ -14,8 +14,6 @@ clean:
 	rm -rf auto output example.pdf gridslides.zip gridslides
 
 dist: clean example.pdf *.cls *.sty README.md
-	mkdir -p gridslides/figures
-	cp `git ls-files | grep -v figures | grep -v .gitignore` gridslides
-	cp `git ls-files | grep figures` gridslides/figures
+	for i in $$(git ls-files | grep -v .gitignore); do mkdir -p gridslides/$$(dirname $$i); cp $$i gridslides/$$i; done
 	zip -r gridslides.zip gridslides
 	rm -rf gridslides
