@@ -71,6 +71,14 @@ Each slide can be split in multiple steps by defining blocks with `<n-m>` annota
 \theslide defined by slide number
 ```
 
+### Supported options
+
+See `example.tex` for usage.
+
+* `blocks`, `grid` - Show grid and blocks for debugging
+* `xsteps`, `ysteps` - Number of grid steps
+* `gridsize` - Size of the grid
+
 ## Alternatives
 
 * beamer
