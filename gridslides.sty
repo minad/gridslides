@@ -16,27 +16,26 @@
 \RequirePackage[margin=0mm]{geometry}
 \RequirePackage{xstring}
 \RequirePackage{environ}
-\RequirePackage{enumerate}
 \RequirePackage[pdfusetitle,bookmarksopen]{hyperref}
 \usetikzlibrary{calc}
 
-\newif\ifgridslides@grid\gridslides@gridfalse
-\DeclareOptionX{grid}{\gridslides@gridtrue}
+\newif\ifGS@grid\GS@gridfalse
+\DeclareOptionX{grid}{\GS@gridtrue}
 
-\tikzset{gridslides@block/.style={}}
-\DeclareOptionX{blocks}{\tikzset{gridslides@block/.style={draw=blue,draw opacity=0.2}}}
+\tikzset{GS@block/.style={}}
+\DeclareOptionX{blocks}{\tikzset{GS@block/.style={draw=blue,draw opacity=0.2}}}
 
-\newlength{\gridslides@gridsize}
-\setlength{\gridslides@gridsize}{4mm}
+\newlength{\GS@gridsize}
+\setlength{\GS@gridsize}{4mm}
 
-\def\gridslides@xsteps{32}
-\def\gridslides@ysteps{24}
+\def\GS@xsteps{32}
+\def\GS@ysteps{24}
 
-\DeclareOptionX{gridsize}{\setlength{\gridslides@gridsize}{#1}\geometry{paperwidth=\gridslides@xsteps\gridslides@gridsize,paperheight=\gridslides@ysteps\gridslides@gridsize}}
-\DeclareOptionX{xsteps}{\def\gridslides@xsteps{#1}\geometry{paperwidth=\gridslides@xsteps\gridslides@gridsize}}
-\DeclareOptionX{ysteps}{\def\gridslides@ysteps{#1}\geometry{paperheight=\gridslides@ysteps\gridslides@gridsize}}
+\DeclareOptionX{gridsize}{\setlength{\GS@gridsize}{#1}\geometry{paperwidth=\GS@xsteps\GS@gridsize,paperheight=\GS@ysteps\GS@gridsize}}
+\DeclareOptionX{xsteps}{\def\GS@xsteps{#1}\geometry{paperwidth=\GS@xsteps\GS@gridsize}}
+\DeclareOptionX{ysteps}{\def\GS@ysteps{#1}\geometry{paperheight=\GS@ysteps\GS@gridsize}}
 
-\geometry{paperwidth=\gridslides@xsteps\gridslides@gridsize,paperheight=\gridslides@ysteps\gridslides@gridsize}
+\geometry{paperwidth=\GS@xsteps\GS@gridsize,paperheight=\GS@ysteps\GS@gridsize}
 
 \ProcessOptionsX\relax
 
@@ -45,63 +44,63 @@
 
 \pagestyle{empty}
 
-\def\gridslides@xoff{0}
-\def\gridslides@yoff{0}
+\def\GS@xoff{0}
+\def\GS@yoff{0}
 
-\long\def\gridslides@block(#1,#2,#3)#4{%
-  \let\oldxoff\gridslides@xoff%
-  \let\oldyoff\gridslides@yoff%
-  \pgfmathsetmacro\xoff{\gridslides@xoff+#1}%
-  \pgfmathsetmacro\yoff{\gridslides@yoff+#2}%
-  \global\let\gridslides@xoff\xoff%
-  \global\let\gridslides@yoff\yoff%
+\long\def\GS@block(#1,#2,#3)#4{%
+  \let\oldxoff\GS@xoff%
+  \let\oldyoff\GS@yoff%
+  \pgfmathsetmacro\xoff{\GS@xoff+#1}%
+  \pgfmathsetmacro\yoff{\GS@yoff+#2}%
+  \global\let\GS@xoff\xoff%
+  \global\let\GS@yoff\yoff%
   \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
-    \node[gridslides@block,rectangle,anchor=north west,inner sep=0pt,text width=#3*\the\gridslides@gridsize] at (\xoff*\the\gridslides@gridsize,\yoff*\the\gridslides@gridsize)%
+    \node[GS@block,rectangle,anchor=north west,inner sep=0pt,text width=#3*\the\GS@gridsize] at (\xoff*\the\GS@gridsize,\yoff*\the\GS@gridsize)%
     {%
       \begingroup%
       #4%
       \endgroup%
     };%
   \end{tikzpicture}%
-  \global\let\gridslides@xoff\oldxoff%
-  \global\let\gridslides@yoff\oldyoff%
+  \global\let\GS@xoff\oldxoff%
+  \global\let\GS@yoff\oldyoff%
 }
 
-\def\gridslides@fig(#1,#2,#3)#4{\gridslides@block(#1,#2,#3){\includegraphics[width=\textwidth]{#4}}}
+\def\GS@fig(#1,#2,#3)#4{\GS@block(#1,#2,#3){\includegraphics[width=\textwidth]{#4}}}
 
-\long\def\gridslides@eq(#1,#2)#3{%
-  \gridslides@block(#1,#2,\gridslides@xsteps){%
+\long\def\GS@eq(#1,#2)#3{%
+  \GS@block(#1,#2,\GS@xsteps){%
     $\begin{aligned}#3\end{aligned}$%
   }%
 }
 
-\long\def\gridslides@txt(#1,#2)#3{\gridslides@block(#1,#2,\gridslides@xsteps){\mbox{#3}}}
+\long\def\GS@txt(#1,#2)#3{\GS@block(#1,#2,\GS@xsteps){\mbox{#3}}}
 
-\newcounter{gridslides@totalsteps}
-\newcounter{gridslides@step}
+\newcounter{GS@totalsteps}
+\newcounter{GS@step}
 
-\newcommand{\gridslides@setsteps}[1]{%
-  \ifnum#1>\value{gridslides@totalsteps}%
-    \setcounter{gridslides@totalsteps}{#1}%
+\newcommand{\GS@setsteps}[1]{%
+  \ifnum#1>\value{GS@totalsteps}%
+    \setcounter{GS@totalsteps}{#1}%
   \fi%
 }
 
-\long\def\gridslides@from<#1->#2#3{%
-  \gridslides@setsteps{#1}%
-  \ifnum\value{gridslides@step}<#1%
+\long\def\GS@from<#1->#2#3{%
+  \GS@setsteps{#1}%
+  \ifnum\value{GS@step}<#1%
     #3%
   \else%
     #2%
   \fi%
  }
 
-\long\def\gridslides@only<#1-#2>#3#4{%
-  \gridslides@setsteps{#1}%
-  \gridslides@setsteps{#2}%
-  \ifnum\value{gridslides@step}<#1%
+\long\def\GS@only<#1-#2>#3#4{%
+  \GS@setsteps{#1}%
+  \GS@setsteps{#2}%
+  \ifnum\value{GS@step}<#1%
     #4%
   \else%
-    \ifnum\value{gridslides@step}>#2%
+    \ifnum\value{GS@step}>#2%
       #4%
     \else%
       #3%
@@ -112,70 +111,70 @@
 \long\def\alt<#1>#2#3{%
   \IfSubStr{#1}{-}{%
     \IfBeginWith{#1}{-}{%
-      \gridslides@only<1#1>{#2}{#3}%
+      \GS@only<1#1>{#2}{#3}%
     }{%
       \IfEndWith{#1}{-}{%
-        \gridslides@from<#1>{#2}{#3}%
+        \GS@from<#1>{#2}{#3}%
       }{%
-        \gridslides@only<#1>{#2}{#3}%
+        \GS@only<#1>{#2}{#3}%
       }%
     }%
   }{%
-    \gridslides@only<#1-#1>{#2}{#3}%
+    \GS@only<#1-#1>{#2}{#3}%
   }%
 }
 
 \long\def\only<#1>#2{\alt<#1>{#2}{}}
 
-\long\def\gridslides@blockhelper#1<#2>(#3)#4{\only<#2>{#1(#3){#4}}}
-\def\gridslides@defblock#1{%
+\long\def\GS@blockhelper#1<#2>(#3)#4{\only<#2>{#1(#3){#4}}}
+\def\GS@defblock#1{%
   \long\expandafter\def\csname#1\endcsname{%
-    \@ifnextchar<{\gridslides@blockhelper{\csname gridslides@#1\endcsname}}{\csname gridslides@#1\endcsname}%
+    \@ifnextchar<{\GS@blockhelper{\csname GS@#1\endcsname}}{\csname GS@#1\endcsname}%
   }%
 }
 
-\gridslides@defblock{block}
-\gridslides@defblock{fig}
-\gridslides@defblock{eq}
-\gridslides@defblock{txt}
+\GS@defblock{block}
+\GS@defblock{fig}
+\GS@defblock{eq}
+\GS@defblock{txt}
 
-\long\def\gridslides@cmdhelper#1#2<#3>#4{\alt<#3>{#1{#4}}{#2{#4}}}
-\def\gridslides@cmd#1#2{%
-  \expandafter\let\csname gridslides@#1\expandafter\endcsname\csname#1\endcsname%
+\long\def\GS@cmdhelper#1#2<#3>#4{\alt<#3>{#1{#4}}{#2{#4}}}
+\def\GS@cmd#1#2{%
+  \expandafter\let\csname GS@#1\expandafter\endcsname\csname#1\endcsname%
   \long\expandafter\def\csname#1\endcsname{%
-    \@ifnextchar<{\gridslides@cmdhelper{\csname gridslides@#1\endcsname}{#2}}{\csname gridslides@#1\endcsname}%
+    \@ifnextchar<{\GS@cmdhelper{\csname GS@#1\endcsname}{#2}}{\csname GS@#1\endcsname}%
   }%
 }
 
-\newcommand{\rgb}[1]{\definecolor{gridslides@rgb}{HTML}{#1}\color{gridslides@rgb}}
+\newcommand{\rgb}[1]{\definecolor{GS@rgb}{HTML}{#1}\color{GS@rgb}}
 
-\gridslides@cmd{textbf}{\relax}
-\gridslides@cmd{textit}{\relax}
-\gridslides@cmd{emph}{\relax}
-\gridslides@cmd{underline}{\relax}
-\def\gridslides@ignore#1{}
-\gridslides@cmd{color}{\gridslides@ignore}
-\gridslides@cmd{rgb}{\gridslides@ignore}
+\GS@cmd{textbf}{\relax}
+\GS@cmd{textit}{\relax}
+\GS@cmd{emph}{\relax}
+\GS@cmd{underline}{\relax}
+\def\GS@ignore#1{}
+\GS@cmd{color}{\GS@ignore}
+\GS@cmd{rgb}{\GS@ignore}
 
 \newcounter{slide}
 \stepcounter{slide}
 
-\newcommand{\gridslides@page}[1]{%
-  \setcounter{gridslides@totalsteps}{1}%
-  \setcounter{gridslides@step}{0}%
+\newcommand{\GS@page}[1]{%
+  \setcounter{GS@totalsteps}{1}%
+  \setcounter{GS@step}{0}%
   \setlength{\parindent}{0pt}%
   \setlength{\parskip}{0pt}%
-  \loop\ifnum\value{gridslides@step}<\value{gridslides@totalsteps}%
-    \stepcounter{gridslides@step}%
+  \loop\ifnum\value{GS@step}<\value{GS@totalsteps}%
+    \stepcounter{GS@step}%
     \clearpage%
     \begingroup%
     #1%
     \endgroup%
-    \ifgridslides@grid%
+    \ifGS@grid%
     \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
-      \begin{scope}[x=\the\gridslides@gridsize,y=\the\gridslides@gridsize]%
-        \draw[opacity=0.2,gray,step=1,line width=0.1pt] (0,0) grid (\gridslides@xsteps,\gridslides@ysteps);%
-        \draw[opacity=0.2,red,step=8,line width=0.5pt] (0,0) grid (\gridslides@xsteps,\gridslides@ysteps);%
+      \begin{scope}[x=\the\GS@gridsize,y=\the\GS@gridsize]%
+        \draw[opacity=0.2,gray,step=1,line width=0.1pt] (0,0) grid (\GS@xsteps,\GS@ysteps);%
+        \draw[opacity=0.2,red,step=8,line width=0.5pt] (0,0) grid (\GS@xsteps,\GS@ysteps);%
       \end{scope}%
     \end{tikzpicture}%
     \fi%
@@ -183,54 +182,33 @@
   \stepcounter{slide}%
 }
 
-\newcommand{\bg}[1]{\fig(0,0,\gridslides@xsteps){#1}}
+\newcommand{\bg}[1]{\fig(0,0,\GS@xsteps){#1}}
 
-\def\gridslides@style{}
+\def\GS@style{}
 \def\theheadline{}
 
-\newcommand{\gridslides@slide}[2]{%
-  \gridslides@page{%
+\newcommand{\GS@slide}[2]{%
+  \GS@page{%
     \global\def\theheadline{#1}%
-    \gridslides@style%
+    \GS@style%
     #2%
-    \ifnum\value{gridslides@step}=1%
+    \ifnum\value{GS@step}=1%
       \pdfbookmark[0]{\theheadline}{slide\theslide}%
     \fi
-    \ifnum\value{gridslides@totalsteps}>1%
-      \pdfbookmark[1]{Step \thegridslides@step}{slide\theslide.step\thegridslides@step}%
+    \ifnum\value{GS@totalsteps}>1%
+      \pdfbookmark[1]{Step \theGS@step}{slide\theslide.step\theGS@step}%
     \fi
   }%
 }
 
-\NewEnviron{slide}[1]{\gridslides@slide{#1}{\BODY}}
-\NewEnviron{style}{\global\let\gridslides@style\BODY}
-\NewEnviron{rawslide}{\gridslides@page{\BODY}}
+\NewEnviron{slide}[1]{\GS@slide{#1}{\BODY}}
+\NewEnviron{style}{\global\let\GS@style\BODY}
+\NewEnviron{rawslide}{\GS@page{\BODY}}
 
 \newcommand{\institute}[1]{\newcommand\@institute{#1}}
 \newcommand{\theauthor}{\@author}
 \newcommand{\thedate}{\@date}
 \newcommand{\thetitle}{\@title}
 \newcommand{\theinstitute}{\@institute}
-
-% undefine some commands from article
-\let\tableofcontents\gridslides@undefined
-\let\addcontentsline\gridslides@undefined
-\let\paragraph\gridslides@undefined
-\let\subparagraph\gridslides@undefined
-\let\chapter\gridslides@undefined
-\let\section\gridslides@undefined
-\let\subsection\gridslides@undefined
-\let\subsubsection\gridslides@undefined
-\let\maketitle\gridslides@undefined
-\let\figure\gridslides@undefined
-\let\table\gridslides@undefined
-\let\pagestyle\gridslides@undefined
-\let\footnote\gridslides@undefined
-\let\bf\gridslides@undefined
-\let\it\gridslides@undefined
-\let\cal\gridslides@undefined
-\let\tt\gridslides@undefined
-\let\listoffigures\gridslides@undefined
-\let\listoftables\gridslides@undefined
 
 \endinput
