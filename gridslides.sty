@@ -21,7 +21,7 @@
 \RequirePackage{microtype}
 \RequirePackage{ragged2e}
 \RequirePackage{tikz}
-\RequirePackage[margin=0mm,paperwidth=128mm,paperheight=96mm]{geometry}
+\RequirePackage[margin=0mm]{geometry}
 \RequirePackage{xstring}
 \RequirePackage{enumerate}
 \RequirePackage{environ}
@@ -34,12 +34,17 @@
 \tikzset{gridslides@block/.style={}}
 \DeclareOptionX{blocks}{\tikzset{gridslides@block/.style={draw=blue,draw opacity=0.2}}}
 
-\def\gridslides@gridsize{4}
+\newlength{\gridslides@gridsize}
+\setlength{\gridslides@gridsize}{4mm}
+
 \def\gridslides@xsteps{32}
 \def\gridslides@ysteps{24}
-\DeclareOptionX{gridsize}{\def\gridslides@gridsize{#1}}
-\DeclareOptionX{xsteps}{\def\gridslides@xsteps{#1}}
-\DeclareOptionX{ysteps}{\def\gridslides@ysteps{#1}}
+
+\DeclareOptionX{gridsize}{\setlength{\gridslides@gridsize}{#1}\geometry{paperwidth=\gridslides@xsteps\gridslides@gridsize,paperheight=\gridslides@ysteps\gridslides@gridsize}}
+\DeclareOptionX{xsteps}{\def\gridslides@xsteps{#1}\geometry{paperwidth=\gridslides@xsteps\gridslides@gridsize}}
+\DeclareOptionX{ysteps}{\def\gridslides@ysteps{#1}\geometry{paperheight=\gridslides@ysteps\gridslides@gridsize}}
+
+\geometry{paperwidth=\gridslides@xsteps\gridslides@gridsize,paperheight=\gridslides@ysteps\gridslides@gridsize}
 
 \ProcessOptionsX\relax
 
@@ -59,7 +64,7 @@
   \global\let\gridslides@xoff\xoff%
   \global\let\gridslides@yoff\yoff%
   \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
-    \node[gridslides@block,rectangle,anchor=north west,inner sep=0pt,text width=#3*\gridslides@gridsize*1mm] at (\gridslides@gridsize*\xoff*1mm,\gridslides@gridsize*\yoff*1mm)%
+    \node[gridslides@block,rectangle,anchor=north west,inner sep=0pt,text width=#3*\the\gridslides@gridsize] at (\xoff*\the\gridslides@gridsize,\yoff*\the\gridslides@gridsize)%
     {%
       \begingroup%
       #4%
@@ -176,7 +181,7 @@
     \endgroup%
     \ifgridslides@grid%
     \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
-      \begin{scope}[x=\gridslides@gridsize*1mm,y=\gridslides@gridsize*1mm]%
+      \begin{scope}[x=\the\gridslides@gridsize,y=\the\gridslides@gridsize]%
         \draw[opacity=0.2,gray,step=1,line width=0.1pt] (0,0) grid (\gridslides@xsteps,\gridslides@ysteps);%
         \draw[opacity=0.2,red,step=8,line width=0.5pt] (0,0) grid (\gridslides@xsteps,\gridslides@ysteps);%
       \end{scope}%
