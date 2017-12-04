@@ -43,6 +43,10 @@
 \pagestyle{empty}
 \graphicspath{{figures/}}
 
+\def\gridslides@xsteps{32}
+\def\gridslides@ysteps{24}
+\def\gridslides@gridsize{4}
+
 \def\gridslides@xoff{0}
 \def\gridslides@yoff{0}
 
@@ -54,7 +58,7 @@
   \global\let\gridslides@xoff\xoff%
   \global\let\gridslides@yoff\yoff%
   \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
-    \node[gridslides@block,rectangle,anchor=north west,inner sep=0pt,text width=#3*4mm] at (4mm*\xoff,4mm*\yoff)%
+    \node[gridslides@block,rectangle,anchor=north west,inner sep=0pt,text width=#3*\gridslides@gridsize*1mm] at (\gridslides@gridsize*\xoff*1mm,\gridslides@gridsize*\yoff*1mm)%
     {%
       \begingroup%
       #4%
@@ -68,12 +72,12 @@
 \def\gridslides@fig(#1,#2,#3)#4{\gridslides@block(#1,#2,#3){\includegraphics[width=\textwidth]{#4}}}
 
 \long\def\gridslides@eq(#1,#2)#3{%
-  \gridslides@block(#1,#2,32){%
+  \gridslides@block(#1,#2,\gridslides@xsteps){%
     $\begin{aligned}#3\end{aligned}$%
   }%
 }
 
-\long\def\gridslides@txt(#1,#2)#3{\gridslides@block(#1,#2,32){\mbox{#3}}}
+\long\def\gridslides@txt(#1,#2)#3{\gridslides@block(#1,#2,\gridslides@xsteps){\mbox{#3}}}
 
 \newcounter{gridslides@totalsteps}
 \newcounter{gridslides@step}
@@ -171,9 +175,9 @@
     \endgroup%
     \ifgridslides@grid%
     \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
-      \begin{scope}[x=4mm,y=4mm]%
-        \draw[opacity=0.2,gray,step=1,line width=0.1pt] (0,0) grid (32,24);%
-        \draw[opacity=0.2,red,step=8,line width=0.5pt] (0,0) grid (32,24);%
+      \begin{scope}[x=\gridslides@gridsize*1mm,y=\gridslides@gridsize*1mm]%
+        \draw[opacity=0.2,gray,step=1,line width=0.1pt] (0,0) grid (\gridslides@xsteps,\gridslides@ysteps);%
+        \draw[opacity=0.2,red,step=8,line width=0.5pt] (0,0) grid (\gridslides@xsteps,\gridslides@ysteps);%
       \end{scope}%
     \end{tikzpicture}%
     \fi%
@@ -181,7 +185,7 @@
   \stepcounter{slide}%
 }
 
-\newcommand{\bg}[1]{\fig(0,0,32){#1}}
+\newcommand{\bg}[1]{\fig(0,0,\gridslides@xsteps){#1}}
 
 \def\gridslides@style{}
 \def\theheadline{}
