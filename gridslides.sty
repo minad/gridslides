@@ -9,6 +9,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{gridslides}
 
+\RequirePackage{xkeyval}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage{amsmath,amsthm,amssymb}
 \RequirePackage{mathtools}
@@ -28,24 +29,24 @@
 \usetikzlibrary{calc}
 
 \newif\ifgridslides@grid\gridslides@gridfalse
-\DeclareOption{grid}{\gridslides@gridtrue}
+\DeclareOptionX{grid}{\gridslides@gridtrue}
 
 \tikzset{gridslides@block/.style={}}
-\DeclareOption{blocks}{\tikzset{gridslides@block/.style={draw=blue,draw opacity=0.2}}}
+\DeclareOptionX{blocks}{\tikzset{gridslides@block/.style={draw=blue,draw opacity=0.2}}}
 
-\DeclareOption*{\ClassWarning{gridslides}{Unknown option '\CurrentOption'}}
+\def\gridslides@gridsize{4}
+\def\gridslides@xsteps{32}
+\def\gridslides@ysteps{24}
+\DeclareOptionX{gridsize}{\def\gridslides@gridsize{#1}}
+\DeclareOptionX{xsteps}{\def\gridslides@xsteps{#1}}
+\DeclareOptionX{ysteps}{\def\gridslides@ysteps{#1}}
 
-\ProcessOptions\relax
+\ProcessOptionsX\relax
 
 % support arrows in overlay
 \tikzstyle{every picture}+=[remember picture]
 
 \pagestyle{empty}
-\graphicspath{{figures/}}
-
-\def\gridslides@xsteps{32}
-\def\gridslides@ysteps{24}
-\def\gridslides@gridsize{4}
 
 \def\gridslides@xoff{0}
 \def\gridslides@yoff{0}

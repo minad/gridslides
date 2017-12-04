@@ -9,11 +9,15 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{gridslides}
 
-\DeclareOption{blocks}{\PassOptionsToPackage{\CurrentOption}{gridslides}}
-\DeclareOption{grid}{\PassOptionsToPackage{\CurrentOption}{gridslides}}
-\DeclareOption*{\ClassWarning{gridslides}{Unknown option '\CurrentOption'}}
+\RequirePackage{xkeyval}
 
-\ProcessOptions\relax
+\DeclareOptionX{gridsize}{\PassOptionsToPackage{\CurrentOption}{gridslides}}
+\DeclareOptionX{xsteps}{\PassOptionsToPackage{\CurrentOption}{gridslides}}
+\DeclareOptionX{ysteps}{\PassOptionsToPackage{\CurrentOption}{gridslides}}
+\DeclareOptionX{blocks}{\PassOptionsToPackage{\CurrentOption}{gridslides}}
+\DeclareOptionX{grid}{\PassOptionsToPackage{\CurrentOption}{gridslides}}
+
+\ProcessOptionsX\relax
 
 \LoadClass{article}
 \RequirePackage{gridslides}
