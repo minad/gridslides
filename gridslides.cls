@@ -6,5 +6,16 @@
 % Date:        2017-11-28
 % License:     GPL2 or LPPL1.3 at your option
 % Homepage:    https://github.com/minad/gridslides
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{gridslides}
+
+\DeclareOption{blocks}{\PassOptionsToPackage{\CurrentOption}{gridslides}}
+\DeclareOption{grid}{\PassOptionsToPackage{\CurrentOption}{gridslides}}
+\DeclareOption*{\ClassWarning{gridslides}{Unknown option '\CurrentOption'}}
+
+\ProcessOptions\relax
+
 \LoadClass{article}
 \RequirePackage{gridslides}
+
+\endinput

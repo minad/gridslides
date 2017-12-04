@@ -6,6 +6,9 @@
 % Date:        2017-11-28
 % License:     GPL2 or LPPL1.3 at your option
 % Homepage:    https://github.com/minad/gridslides
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{gridslides}
+
 \RequirePackage[utf8]{inputenc}
 \RequirePackage{amsmath,amsthm,amssymb}
 \RequirePackage{mathtools}
@@ -24,25 +27,21 @@
 \RequirePackage[pdfusetitle,bookmarksopen]{hyperref}
 \usetikzlibrary{calc}
 
+\newif\ifgridslides@grid\gridslides@gridfalse
+\DeclareOption{grid}{\gridslides@gridtrue}
+
+\tikzset{gridslides@block/.style={}}
+\DeclareOption{blocks}{\tikzset{gridslides@block/.style={draw=blue,draw opacity=0.2}}}
+
+\DeclareOption*{\ClassWarning{gridslides}{Unknown option '\CurrentOption'}}
+
+\ProcessOptions\relax
+
 % support arrows in overlay
 \tikzstyle{every picture}+=[remember picture]
 
 \pagestyle{empty}
 \graphicspath{{figures/}}
-
-\newif\ifgridslides@grid
-%\gridslides@gridtrue
-\gridslides@gridfalse
-
-\newif\ifgridslides@boxes
-%\gridslides@boxestrue
-\gridslides@boxesfalse
-
-\ifgridslides@boxes%
-\tikzset{gridslides@box/.style={draw=blue}}
-\else
-\tikzset{gridslides@box/.style={}}
-\fi
 
 \def\gridslides@xoff{0}
 \def\gridslides@yoff{0}
@@ -55,7 +54,7 @@
   \global\let\gridslides@xoff\xoff%
   \global\let\gridslides@yoff\yoff%
   \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
-    \node[gridslides@box,rectangle,anchor=north west,inner sep=0pt,text width=#3*4mm] at (4mm*\xoff,4mm*\yoff)%
+    \node[gridslides@block,rectangle,anchor=north west,inner sep=0pt,text width=#3*4mm] at (4mm*\xoff,4mm*\yoff)%
     {%
       \begingroup%
       #4%
@@ -170,21 +169,19 @@
     \begingroup%
     #1%
     \endgroup%
+    \ifgridslides@grid%
+    \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
+      \begin{scope}[x=4mm,y=4mm]%
+        \draw[opacity=0.2,gray,step=1,line width=0.1pt] (0,0) grid (32,24);%
+        \draw[opacity=0.2,red,step=8,line width=0.5pt] (0,0) grid (32,24);%
+      \end{scope}%
+    \end{tikzpicture}%
+    \fi%
   \repeat%
   \stepcounter{slide}%
 }
 
-\newcommand{\bg}[1]{%
-  \fig(0,0,32){#1}%
-  \ifgridslides@grid%
-  \begin{tikzpicture}[overlay,yscale=-1,shift=(current page.north west)]%
-    \begin{scope}[x=4mm,y=4mm]%
-      \draw[gray,step=1,line width=0.1pt] (0,0) grid (32,24);%
-      \draw[red,step=8,line width=1pt] (0,0) grid (32,24);%
-    \end{scope}%
-  \end{tikzpicture}%
-  \fi%
-}
+\newcommand{\bg}[1]{\fig(0,0,32){#1}}
 
 \def\gridslides@style{}
 \def\theheadline{}
@@ -233,3 +230,5 @@
 \let\tt\gridslides@undefined
 \let\listoffigures\gridslides@undefined
 \let\listoftables\gridslides@undefined
+
+\endinput
